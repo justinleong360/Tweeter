@@ -10,12 +10,14 @@ import UIKit
 
 class HomeTableTableViewController: UITableViewController {
 
+    @IBOutlet var tweetTable: UITableView!
     var tweetArray = [NSDictionary]()
     var numberOfTweets: Int!
     
     override func viewDidLoad() {
         super.viewDidLoad()
-        loadTweets()
+        self.tweetTable.rowHeight = UITableView.automaticDimension
+        self.tweetTable.estimatedRowHeight = 150
     }
 
     func loadTweets() {
@@ -31,6 +33,11 @@ class HomeTableTableViewController: UITableViewController {
         }, failure: { (Error) in
             print("Could not retrieve tweets!")
         })
+    }
+    
+    override func viewDidAppear(_ animated: Bool) {
+        super.viewDidAppear(animated)
+        loadTweets()
     }
     
     @IBAction func onLogout(_ sender: Any) {
@@ -54,11 +61,15 @@ class HomeTableTableViewController: UITableViewController {
             cell.profileImageView.image = UIImage(data: imageData)
         }
         
+        cell.setFavorited(tweetArray[indexPath.row]["favorited"] as! Bool)
+        cell.tweetId = tweetArray[indexPath.row]["id"] as! Int
+        cell.setRetweeted(tweetArray[indexPath.row]["retweeted"] as! Bool)
+        
         return cell
     }
     
     // MARK: - Table view data source
-
+    
     override func numberOfSections(in tableView: UITableView) -> Int {
         // #warning Incomplete implementation, return the number of sections
         return 1
